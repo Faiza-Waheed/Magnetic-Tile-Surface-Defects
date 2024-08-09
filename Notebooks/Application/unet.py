@@ -61,6 +61,7 @@ class UNet_2D(nn.Module):
         
         # Final Layer
         self.final_conv = nn.Conv2d(init_features, out_channels, kernel_size=1)
+        self.sigmoid = nn.Sigmoid()  # Add sigmoid activation
         
         # Max pooling
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
@@ -93,21 +94,27 @@ class UNet_2D(nn.Module):
         # Decoder
         dec4 = self.upconv4(bottleneck)
         dec4 = torch.cat([dec4, enc4], dim=1)
+        #print("Shape after dec4 and cat(enc4):", dec4.shape)
         dec4 = self.residual_conv_block(self.init_features * 16, self.init_features * 8)(dec4)
         
         dec3 = self.upconv3(dec4)
         dec3 = torch.cat([dec3, enc3], dim=1)
+        #print("Shape after dec3 and cat(enc3):", dec3.shape)
         dec3 = self.residual_conv_block(self.init_features * 8, self.init_features * 4)(dec3)
         
         dec2 = self.upconv2(dec3)
         dec2 = torch.cat([dec2, enc2], dim=1)
+        #print("Shape after dec2 and cat(enc2):", dec2.shape)
         dec2 = self.residual_conv_block(self.init_features * 4, self.init_features * 2)(dec2)
         
         dec1 = self.upconv1(dec2)
         dec1 = torch.cat([dec1, enc1], dim=1)
+        #print("Shape after dec1 and cat(enc1):", dec1.shape)
         dec1 = self.residual_conv_block(self.init_features * 2, self.init_features)(dec1)
         
         # Final Layer
         out = self.final_conv(dec1)
+        out = self.sigmoid(out)
+        #print("Output shape after final_conv and sigmoid:", out.shape)
         
         return out

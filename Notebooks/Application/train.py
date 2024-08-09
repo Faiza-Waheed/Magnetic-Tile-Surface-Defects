@@ -34,8 +34,8 @@ def train_2D(n_epochs, loaders, model, optimizer, criterion, train_on_gpu, path)
             # Move to GPU
             if train_on_gpu:
                 data, target = data.cuda(), target.cuda()
-            if batch_idx % show_every == 0:
-                print(f'{batch_idx + 1} / {len(loaders["train"])}...')
+            #if batch_idx % show_every == 0:
+                #print(f'{batch_idx + 1} / {len(loaders["train"])}...')
             # Clear the gradients of all optimized variable
             optimizer.zero_grad() 
             # Forward pass (inference) to get the output
@@ -57,8 +57,8 @@ def train_2D(n_epochs, loaders, model, optimizer, criterion, train_on_gpu, path)
         with torch.no_grad():
             # Batch training loop
             for batch_idx, (data, target) in enumerate(loaders['val']):
-                if batch_idx % show_every == 0:
-                    print(f'{batch_idx + 1} / {len(loaders["val"])}...')
+                #if batch_idx % show_every == 0:
+                    #print(f'{batch_idx + 1} / {len(loaders["val"])}...')
                 # Move to GPU 
                 if train_on_gpu:
                     data, target = data.cuda(), target.cuda()
