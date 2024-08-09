@@ -66,3 +66,34 @@ class TverskyLoss(nn.Module):
         tversky = tp/(tp + self.alpha * fn + self.beta * fp + self.smooth)
         # return the loss
         return 1 - tversky
+    
+#--------------------Binary Cross-Entropy (BCE) loss function--------------------#
+
+class BinaryCrossEntropyLoss(nn.Module):
+    def __init__(self, smooth=1e-6):
+        """
+        Standard Binary Cross-Entropy (BCE) Loss.
+        
+        Args:
+        - smooth (float): Smoothing factor to prevent log(0) errors.
+        """
+        super(BinaryCrossEntropyLoss, self).__init__()
+        self.smooth = smooth
+
+    def forward(self, inputs, targets):
+        """
+        Forward pass to calculate the BCE loss.
+        
+        Args:
+        - inputs (tensor): Predicted probabilities (between 0 and 1) from the model.
+        - targets (tensor): Ground truth binary labels (0 or 1).
+        
+        Returns:
+        - Tensor: The computed BCE loss.
+        """
+        pos_loss = targets * torch.log(inputs + self.smooth)
+        neg_loss = (1 - targets) * torch.log(1 - inputs + self.smooth)
+        
+        loss = pos_loss + neg_loss
+        
+        return -torch.mean(loss)
